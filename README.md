@@ -1,89 +1,54 @@
-LangGraph Multi-Agent Framework
+# LangGraph Multi-Agent Framework
+
 This repository provides a modular, LangGraph-based multi-agent framework designed for building sophisticated conversational AI applications. It leverages LangChain's capabilities for LLM integration and tool utilization, orchestrated by a central supervisor agent. The framework is designed to be easily extensible, allowing you to add new agents and tools to handle diverse user requests.
 
-Features
-Modular Architecture: Easily add or remove agents and tools without significantly refactoring the core framework.
+## Features
 
-Supervisor-Driven Routing: A central LLM-powered supervisor intelligently routes user requests to the most appropriate worker agent.
+* **Modular Architecture**: Easily add or remove agents and tools without significantly refactoring the core framework.
 
-Tool-Calling Agents: Agents can dynamically decide to use predefined tools to perform specific actions (e.g., calculations, fetching real-world data).
+* **Supervisor-Driven Routing**: A central LLM-powered supervisor intelligently routes user requests to the most appropriate worker agent.
 
-Conversation History Management: The system maintains and utilizes full conversation history for informed decision-making by both the supervisor and worker agents.
+* **Tool-Calling Agents**: Agents can dynamically decide to use predefined tools to perform specific actions (e.g., calculations, fetching real-world data).
 
-Ollama Integration: Configured to work seamlessly with local Ollama LLMs, making it accessible for development and experimentation.
+* **Conversation History Management**: The system maintains and utilizes full conversation history for informed decision-making by both the supervisor and worker agents.
 
-Extensible: Clear patterns for adding new agents, tools, and modifying routing logic.
+* **Ollama Integration**: Configured to work seamlessly with local Ollama LLMs, making it accessible for development and experimentation.
 
-Project Structure
-langgraph-multi-agent-framework/
-├── agents/
-│   ├── calculator_agent.py      # Agent for mathematical calculations
-│   ├── data_analysis_agent.py   # Placeholder agent for data processing tasks
-│   ├── stock_news_agent.py      # Agent for fetching and summarizing stock news
-│   └── text_processing_agent.py # General-purpose agent for text queries
-├── llms/
-│   └── ollama_llms.py           # LLM configurations (Supervisor and Agent LLMs)
-├── supervisor/
-│   ├── prompts.py               # Prompts for the supervisor agent
-│   └── supervisor_node.py       # Logic for the supervisor agent's routing decisions
-├── tools/
-│   └── tools.py                 # Definitions of all callable tools
-├── main.py                      # Main application entry point; defines and runs the LangGraph
-├── state.py                     # Defines the shared AgentState for the graph
-└── README.md                    # This file
-Getting Started
+* **Extensible**: Clear patterns for adding new agents, tools, and modifying routing logic.
+
+## Project Structure
+
+langgraph-multi-agent-framework/├── agents/│   ├── calculator_agent.py      # Agent for mathematical calculations│   ├── data_analysis_agent.py   # Placeholder agent for data processing tasks│   ├── stock_news_agent.py      # Agent for fetching and summarizing stock news│   └── text_processing_agent.py # General-purpose agent for text queries├── llms/│   └── ollama_llms.py           # LLM configurations (Supervisor and Agent LLMs)├── supervisor/│   ├── prompts.py               # Prompts for the supervisor agent│   └── supervisor_node.py       # Logic for the supervisor agent's routing decisions├── tools/│   └── tools.py                 # Definitions of all callable tools├── main.py                      # Main application entry point; defines and runs the LangGraph├── state.py                     # Defines the shared AgentState for the graph└── README.md                    # This file
+## Getting Started
+
 Follow these steps to set up and run the multi-agent framework locally.
 
-Prerequisites
-Python 3.9+
+### Prerequisites
 
-Poetry (recommended for dependency management) or pip
+* Python 3.9+
 
-Ollama installed and running with the specified models.
+* Poetry (recommended for dependency management) or pip
 
-1. Install Ollama & Download Models
+* Ollama installed and running with the specified models.
+
+### 1. Install Ollama & Download Models
+
 Ensure you have Ollama installed and running on your machine.
-Download the qwen2.5-coder:14b model (or your preferred compatible model) which is used for both supervisor and agent LLMs in this setup:
+Download the `qwen2.5-coder:14b` model (or your preferred compatible model) which is used for both supervisor and agent LLMs in this setup:
 
-Bash
-
+```bash
 ollama pull qwen2.5-coder:14b
 # If you prefer a different model, update model_name in llms/ollama_llms.py accordingly.
-Verify Ollama is running by visiting http://localhost:11434 in your browser. You should see a simple "Ollama is running" message.
-
-2. Clone the Repository
-Bash
-
-git clone https://github.com/your-username/langgraph-multi-agent-framework.git
+Verify Ollama is running by visiting http://localhost:11434 in your browser. You should see a simple "Ollama is running" message.2. Clone the Repositorygit clone [https://github.com/your-username/langgraph-multi-agent-framework.git](https://github.com/your-username/langgraph-multi-agent-framework.git)
 cd langgraph-multi-agent-framework
-3. Set Up Python Environment and Install Dependencies
-Using Poetry (Recommended):
-
-Bash
-
-poetry install
+3. Set Up Python Environment and Install DependenciesUsing Poetry (Recommended):poetry install
 poetry shell
-Using pip:
-
-Bash
-
-python -m venv venv
+Using pip:python -m venv venv
 source venv/bin/activate # On Windows: .\venv\Scripts\activate
 pip install -r requirements.txt # You'll need to create a requirements.txt first
-If you don't have requirements.txt, you can generate it using pip freeze > requirements.txt after installing dependencies, or manually install them:
-
-Bash
-
-pip install langchain langchain-openai langgraph yfinance
-4. Run the Application
-Execute the main.py script:
-
-Bash
-
-python main.py
-The system will start, and you will be prompted to enter your requests.
-
---- Script started ---
+If you don't have requirements.txt, you can generate it using pip freeze > requirements.txt after installing dependencies, or manually install them:pip install langchain langchain-openai langgraph yfinance
+4. Run the ApplicationExecute the main.py script:python main.py
+The system will start, and you will be prompted to enter your requests.--- Script started ---
 Welcome to the Multi-Agent System!
 Type your request below, or type 'quit' to exit.
 
@@ -139,25 +104,7 @@ The news for Microsoft appears to be generally positive, with a strong focus on 
 
 You: quit
 Exiting Multi-Agent System. Goodbye!
-How to Extend the Framework
-This framework is designed for easy expansion. Here's how you can add new capabilities:
-
-1. Create a New Tool
-If your new agent needs to interact with external systems or perform specific, deterministic actions, create a new tool.
-
-Create/Modify tools/tools.py:
-
-Define a Python function with the @tool decorator.
-
-Provide a clear docstring explaining its purpose, arguments, and return values. This docstring is crucial for the LLM to understand when and how to use the tool.
-
-Add the new function to the tools list at the end of the file.
-
-Example tools/tools.py addition:
-
-Python
-
-# ... existing tools ...
+How to Extend the FrameworkThis framework is designed for easy expansion. Here's how you can add new capabilities:1. Create a New ToolIf your new agent needs to interact with external systems or perform specific, deterministic actions, create a new tool.Create/Modify tools/tools.py:Define a Python function with the @tool decorator.Provide a clear docstring explaining its purpose, arguments, and return values. This docstring is crucial for the LLM to understand when and how to use the tool.Add the new function to the tools list at the end of the file.Example tools/tools.py addition:# ... existing tools ...
 
 @tool
 def get_weather(city: str, unit: str = "celsius") -> str:
@@ -176,26 +123,7 @@ def get_weather(city: str, unit: str = "celsius") -> str:
     return "Weather data not available for this city."
 
 tools = [perform_calculation, get_stock_news, get_weather] # Add your new tool here
-2. Create a New Agent
-An agent encapsulates specific logic, potentially using an LLM and/or tools.
-
-Create a new file in agents/: E.g., agents/new_agent.py.
-
-Define the agent function: It must accept state: AgentState and return AgentState (or dict compatible with AgentState).
-
-Implement agent logic:
-
-Simple Agent: If it doesn't need an LLM or tools, just process the messages in state and add new AIMessage or HumanMessage to the list.
-
-LLM-Powered Agent: Import llm_agent from llms.ollama_llms. Use llm_agent.invoke(messages) to get an LLM response.
-
-Tool-Calling Agent: Follow the pattern in calculator_agent.py or stock_news_agent.py. The LLM will suggest tool calls, which you then manually execute and add the ToolMessage results back to the state. Remember to import the specific tool(s) if you're executing them directly.
-
-Example agents/weather_agent.py:
-
-Python
-
-from state import AgentState
+2. Create a New AgentAn agent encapsulates specific logic, potentially using an LLM and/or tools.Create a new file in agents/: E.g., agents/new_agent.py.Define the agent function: It must accept state: AgentState and return AgentState (or dict compatible with AgentState).Implement agent logic:Simple Agent: If it doesn't need an LLM or tools, just process the messages in state and add new AIMessage or HumanMessage to the list.LLM-Powered Agent: Import llm_agent from llms.ollama_llms. Use llm_agent.invoke(messages) to get an LLM response.Tool-Calling Agent: Follow the pattern in calculator_agent.py or stock_news_agent.py. The LLM will suggest tool calls, which you then manually execute and add the ToolMessage results back to the state. Remember to import the specific tool(s) if you're executing them directly.Example agents/weather_agent.py:from state import AgentState
 from llms.ollama_llms import llm_agent
 from tools.tools import get_weather # Import the specific tool
 from langchain_core.messages import HumanMessage, ToolMessage, AIMessage
@@ -219,40 +147,14 @@ def weather_agent(state: AgentState) -> AgentState:
                 except Exception as e:
                     messages.append(ToolMessage(content=f"Error getting weather: {e}", tool_call_id=tool_call['id']))
     return {"messages": messages}
-3. Update the Supervisor Prompt
-The supervisor LLM needs to know about your new agent to route requests to it.
-
-Modify supervisor/prompts.py:
-
-Update the SUPERVISOR_PROMPT to include your new agent in the "Available agents" list.
-
-Provide a concise description of when to route to this new agent.
-
-Example supervisor/prompts.py update:
-
-Python
-
-# ... existing prompt ...
+3. Update the Supervisor PromptThe supervisor LLM needs to know about your new agent to route requests to it.Modify supervisor/prompts.py:Update the SUPERVISOR_PROMPT to include your new agent in the "Available agents" list.Provide a concise description of when to route to this new agent.Example supervisor/prompts.py update:# ... existing prompt ...
 Available agents:
 # ... existing agents ...
 - 'weather_agent': Use this for requests asking about current weather conditions for a city.
 # ...
-4. Integrate the New Agent into main.py
-Import the new agent function:
-
-Python
-
-from agents.weather_agent import weather_agent
-Add a new node to the workflow:
-
-Python
-
-workflow.add_node("weather_agent", weather_agent)
-Add a conditional edge from the supervisor: Map the supervisor's output to your new agent's node name.
-
-Python
-
-workflow.add_conditional_edges(
+4. Integrate the New Agent into main.pyImport the new agent function:from agents.weather_agent import weather_agent
+Add a new node to the workflow:workflow.add_node("weather_agent", weather_agent)
+Add a conditional edge from the supervisor: Map the supervisor's output to your new agent's node name.workflow.add_conditional_edges(
     "supervisor",
     lambda state: state['next'],
     {
@@ -261,39 +163,5 @@ workflow.add_conditional_edges(
         "END": END,
     }
 )
-Add an edge from the new agent back to the supervisor:
-
-Python
-
-workflow.add_edge("weather_agent", "supervisor") # New edge
-5. Test Your New Agent
-Run python main.py and test with a query relevant to your new agent (e.g., "What's the weather in London?"). Observe the console output to ensure the supervisor routes correctly and your agent executes as expected.
-
-Contributing
-Feel free to fork this repository, open issues, and submit pull requests.
-
-Acknowledgements
-This project was developed with the assistance of an AI large language model.
-
-License
-MIT License
-
-Copyright (c) 2025 Arvind Aggarwal
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Add an edge from the new agent back to the supervisor:workflow.add_edge("weather_agent", "supervisor") # New edge
+5. Test Your New AgentRun python main.py and test with a query relevant to your new agent (e.g., "What's the weather in London?"). Observe the console output to ensure the supervisor routes correctly and your agent executes as expected.ContributingFeel free to fork this repository, open issues, and submit pull requests.AcknowledgementsThis project was developed with the assistance of an AI large language model.LicenseMIT LicenseCopyright (c) 2025 Arvind AggarwalPermission is hereby granted, free of charge, to any person obtaining a copyof this software and associated documentation files (the "Software"), to dealin the Software without restriction, including without limitation the rightsto use, copy, modify, merge, publish, distribute, sublicense, and/or sellcopies of the Software, and to permit persons to whom the Software isfurnished to do so, subject to the following conditions:The above copyright notice and this permission notice shall be included in allcopies or substantial portions of the Software.THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS ORIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THEAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHERLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THESOFTWARE.
