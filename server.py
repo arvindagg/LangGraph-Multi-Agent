@@ -121,15 +121,18 @@ async def chat_endpoint(request: Request) -> StreamingResponse:
                     if s["name"] == "LangGraph":
                         yield f"data: {{\"type\": \"start_stream\", \"data\": {{}}}}\n\n"
                     elif s["name"] == "supervisor":
-                         yield f"data: {{\"type\": \"status_update\", \"data\": {{\"status\": \"Supervisor is routing...\"}}}}\n\n"
+                         # Added sender: Supervisor
+                         yield f"data: {{\"type\": \"status_update\", \"data\": {{\"status\": \"Supervisor is routing...\", \"sender\": \"Supervisor\"}}}}\n\n"
                     elif s["name"] in ["web_search_agent", "calculator_agent", "stock_news_agent", "text_processing_agent", "data_analysis_agent"]:
-                        yield f"data: {{\"type\": \"status_update\", \"data\": {{\"status\": \"Executing {s['name'].replace('_', ' ').title()}...\"}}}}\n\n"
+                        # Added sender: Agent
+                        yield f"data: {{\"type\": \"status_update\", \"data\": {{\"status\": \"Executing {s['name'].replace('_', ' ').title()}...\", \"sender\": \"Agent\"}}}}\n\n"
 
                 elif event_type == "on_tool_start":
                     tool_name = s["name"]
                     tool_args = s["data"].get("input", {})
                     escaped_tool_args = json.dumps(tool_args).replace('"', '\\"')
-                    yield f"data: {{\"type\": \"status_update\", \"data\": {{\"status\": \"Calling tool: {tool_name} with args {escaped_tool_args}...\"}}}}\n\n"
+                    # Added sender: Agent
+                    yield f"data: {{\"type\": \"status_update\", \"data\": {{\"status\": \"Calling tool: {tool_name} with args {escaped_tool_args}...\", \"sender\": \"Agent\"}}}}\n\n"
 
                 elif event_type == "on_tool_end":
                     tool_name = s["name"]
@@ -141,7 +144,8 @@ async def chat_endpoint(request: Request) -> StreamingResponse:
                         tool_output_type = f"dictionary"
                     elif isinstance(raw_output, str) and len(raw_output) > 50:
                          tool_output_type = f"text output ({len(raw_output)} chars)"
-                    yield f"data: {{\"type\": \"status_update\", \"data\": {{\"status\": \"Tool '{tool_name}' finished. Produced {tool_output_type}.\"}}}}\n\n"
+                    # Added sender: Agent
+                    yield f"data: {{\"type\": \"status_update\", \"data\": {{\"status\": \"Tool '{tool_name}' finished. Produced {tool_output_type}.\", \"sender\": \"Agent\"}}}}\n\n"
 
                 elif event_type == "on_llm_stream":
                     token = s["data"].get("chunk").content
