@@ -12,6 +12,7 @@ You must select one of the following options:
 - 'calculator_agent': Specifically for straightforward mathematical calculations.
 - 'stock_news_agent': For fetching and summarizing news for a stock ticker (e.g., "AAPL", "MSFT").
 - 'web_search_agent': For general web searches (e.g., current events, facts, knowledge retrieval).
+- 'code_generation_agent': For requests that explicitly ask to write, generate, or create code (e.g., "Write a Python script...", "Generate code for...").
 - 'END': Select 'END' if the user's original request has been fully addressed by the previous agent's response,
          or if the user explicitly indicates completion. This is the goal of every successful flow.
 

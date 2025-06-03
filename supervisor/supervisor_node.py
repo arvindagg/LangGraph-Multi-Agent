@@ -13,6 +13,8 @@ VALID_NEXT_STATES = [
     "calculator_agent",
     "stock_news_agent",
     "web_search_agent",
+    "code_generation_agent",
+    "code_review_agent",
     "END"
 ]
 
@@ -38,6 +40,16 @@ def supervisor_node(state: AgentState) -> Dict[str, str]:
         elif hasattr(last_msg, 'tool_calls') and last_msg.tool_calls:
             # If AI message just contained tool calls but no direct content
             latest_message_content = f"AI called tool(s): {', '.join([tc['name'] for tc in last_msg.tool_calls])}"
+
+    # NEW LOGIC: Explicitly check for terminal messages from code_review_agent or code_generation_agent
+    # This overrides the LLM's routing decision if a specific condition is met.
+    if "Max code review cycles" in latest_message_content or \
+       "The generated code has been reviewed and is acceptable." in latest_message_content or \
+       "Failed to generate or extract valid code." in latest_message_content:
+        print("---Supervisor detected code generation/review cycle completion/failure. Forcing END.---")
+        state['next'] = "END"
+        state['messages'].append(AIMessage(content=f"Supervisor routing to: END (Code task completed/failed)."))
+        return state
 
     # The chat history for the prompt should include all messages *except* the very last one.
     # The last one is passed as 'latest_message_content'.
@@ -90,11 +102,10 @@ def supervisor_node(state: AgentState) -> Dict[str, str]:
         print(f"---Supervisor decided next action: {next_action}---")
         state['messages'].append(AIMessage(content=f"Supervisor routing to: {next_action}"))
         
-        return state # LangGraph expects the entire state dictionary to be returned here
-        # It seems your LangGraph setup is expecting the full state object, not just {'next': 'agent_name'}
+        return state
 
     except Exception as e:
         print(f"---Error in supervisor_node: {e}---")
         state['messages'].append(AIMessage(content=f"Supervisor encountered a critical internal error: {e}. Cannot determine next step. Forcing END."))
-        state['next'] = "END" # Ensure 'next' is set even on error
-        return state # Return the modified state on error
+        state['next'] = "END"
+        return state
